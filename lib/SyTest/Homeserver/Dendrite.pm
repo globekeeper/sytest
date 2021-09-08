@@ -234,6 +234,20 @@ sub _get_config
                ( ! defined $ENV{'POSTGRES'} || $ENV{'POSTGRES'} == '0') ?
                "file:$self->{hs_dir}/devices.db" : $db_uri,
          },
+         threepid_database => {
+            connection_string => 
+               ( ! defined $ENV{'POSTGRES'} || $ENV{'POSTGRES'} == '0') ?
+               "file:$self->{hs_dir}/threepids.db" : $db_uri,
+         },
+         email => {
+            enabled => JSON::false,
+            templates_path => "/src/res/default",
+            smtp => {
+               host => "localhost:25",
+               user => "exampleusername",
+               password => "examplepassword",
+            },
+         },
       },
 
       logging => [{
