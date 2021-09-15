@@ -29,10 +29,10 @@ else
     fi
 
     # Try and fetch the branch
-    wget -q https://github.com/matrix-org/sytest/archive/$branch_name.tar.gz -O sytest.tar.gz || {
+    wget -q https://github.com/globekeeper/sytest/archive/$branch_name.tar.gz -O sytest.tar.gz || {
         # Probably a 404, fall back to develop
         echo "Using develop instead..."
-        wget -q https://github.com/matrix-org/sytest/archive/develop.tar.gz -O sytest.tar.gz
+        wget -q https://github.com/globekeeper/sytest/archive/develop.tar.gz -O sytest.tar.gz
     }
 
     mkdir -p /sytest
@@ -54,6 +54,7 @@ fi
 
 echo "--- Preparing sytest for ${SYTEST_TARGET}"
 
+export COCKROACH
 export SYTEST_LIB="/sytest/lib"
 
 if [ -x "/sytest/scripts/${SYTEST_TARGET}_sytest.sh" ]; then

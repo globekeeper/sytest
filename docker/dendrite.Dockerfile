@@ -1,8 +1,10 @@
 ARG SYTEST_IMAGE_TAG=buster
-FROM matrixdotorg/sytest:${SYTEST_IMAGE_TAG}
+FROM gcr.io/globekeeper-development/sytest:${SYTEST_IMAGE_TAG}
 
-ARG GO_VERSION=1.15.13
+ARG GO_VERSION=1.17
 ENV GO_DOWNLOAD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz
+
+RUN curl https://binaries.cockroachdb.com/cockroach-v21.1.7.linux-amd64.tgz | tar -xz && mv cockroach-v21.1.7.linux-amd64/cockroach /usr/local/bin/
 
 RUN mkdir -p /goroot /gopath
 RUN wget -q $GO_DOWNLOAD -O go.tar.gz

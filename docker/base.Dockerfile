@@ -6,6 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install base dependencies that Python or Go would require
 RUN apt-get -qq update && apt-get -qq install -y \
+    python3 \
+    curl \
     build-essential \
     eatmydata \
     git \
