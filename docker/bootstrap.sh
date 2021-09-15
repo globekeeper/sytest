@@ -7,7 +7,7 @@ set -ex
 export SYTEST_TARGET="$1"
 shift
 
-if [ -d "/sytest" ]; then
+if [ -d "/sytest/scripts" ]; then
     # If the user has mounted in a SyTest checkout, use that.
     # This is the case for sytest's GitHub Actions.
     echo "Using local sytests"
