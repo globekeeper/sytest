@@ -15,7 +15,7 @@ mkdir -p /work
 ./install-deps.pl
 
 # Start the database
-if [ $COCKROACH ]; then
+if [ "$COCKROACH" == "1" ]; then
     su -c 'eatmydata /usr/local/bin/cockroach start-single-node --insecure --store $PGDATA --listen-addr localhost:5432 &' postgres
     sleep 3
     # Create required databases
