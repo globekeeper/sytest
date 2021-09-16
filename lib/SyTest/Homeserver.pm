@@ -318,7 +318,7 @@ sub _get_dbconfig
 
    my $db_type = $db_config{type};
    my $clear_meth = "_clear_db_${db_type}";
-   $self->$clear_meth( %{ $db_config{args} } );
+   # $self->$clear_meth( %{ $db_config{args} } );
 
    return %db_config;
 }

@@ -7,7 +7,7 @@ set -ex
 export SYTEST_TARGET="$1"
 shift
 
-if [ -d "/sytest" ]; then
+if [ -d "/sytest/scripts" ]; then
     # If the user has mounted in a SyTest checkout, use that.
     # This is the case for sytest's GitHub Actions.
     echo "Using local sytests"
@@ -21,16 +21,18 @@ else
         # Otherwise, try and find the branch that the Synapse/Dendrite checkout
         # is using. Fall back to develop if unknown.
         branch_name="$(git --git-dir=/src/.git symbolic-ref HEAD 2>/dev/null)" || branch_name="develop"
+    fi
+
     if [ "$SYTEST_TARGET" == "dendrite" ] && [ "$branch_name" == "master" ]; then
         # Dendrite uses master as its main branch. If the branch is master, we probably want sytest develop
         branch_name="develop"
     fi
 
     # Try and fetch the branch
-    wget -q https://github.com/matrix-org/sytest/archive/$branch_name.tar.gz -O sytest.tar.gz || {
+    wget -q https://github.com/globekeeper/sytest/archive/$branch_name.tar.gz -O sytest.tar.gz || {
         # Probably a 404, fall back to develop
         echo "Using develop instead..."
-        wget -q https://github.com/matrix-org/sytest/archive/develop.tar.gz -O sytest.tar.gz
+        wget -q https://github.com/globekeeper/sytest/archive/develop.tar.gz -O sytest.tar.gz
     }
 
     mkdir -p /sytest
@@ -52,6 +54,7 @@ fi
 
 echo "--- Preparing sytest for ${SYTEST_TARGET}"
 
+export COCKROACH
 export SYTEST_LIB="/sytest/lib"
 
 if [ -x "/sytest/scripts/${SYTEST_TARGET}_sytest.sh" ]; then
