@@ -14,11 +14,22 @@ mkdir -p /work
 # Make sure all Perl deps are installed -- this is done in the docker build so will only install packages added since the last Docker build
 ./install-deps.pl
 
-# Start the database
-su -c 'eatmydata /usr/lib/postgresql/*/bin/pg_ctl -w -D $PGDATA start' postgres
+# Podman apparently fails to map UID correctly 
+chown -R postgres:postgres /var/run/postgresql/
 
-# Create required databases
-su -c 'for i in pg1 pg2 sytest_template; do psql -c "CREATE DATABASE $i;"; done' postgres
+# Start the database
+if [ "$COCKROACH" == "1" ]; then
+    su -c 'eatmydata /usr/local/bin/cockroach start-single-node --insecure --store $PGDATA --listen-addr localhost:5432 &' postgres
+    sleep 3
+    # Create required databases
+    su -c '/usr/local/bin/cockroach sql --insecure -e "CREATE USER postgres; GRANT admin to postgres;" --port 5432 --host localhost' postgres
+    su -c 'for i in pg1 pg2 sytest_template; do psql -h localhost -c "CREATE DATABASE $i;"; done' postgres
+else 
+    su -c 'eatmydata /usr/lib/postgresql/*/bin/pg_ctl -w -D $PGDATA start' postgres
+    # Create required databases
+    su -c 'for i in pg1 pg2 sytest_template; do psql -c "CREATE DATABASE $i;"; done' postgres
+fi
+
 
 export PGUSER=postgres
 export POSTGRES_DB_1=pg1
